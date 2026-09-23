@@ -1,0 +1,10 @@
+name = "aistudio-backend"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+ALLOWED_MODELS = ""        # e.g. "claude-opus-5-5,claude-opus-5,claude-sonnet-5" (empty = allow all)
+MAX_TOKENS_CAP = "32000"
+
+# Secrets — set with `wrangler secret put <NAME>` (never commit them):
+#   NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, ANTHROPIC_API_KEY, APP_TOKENS

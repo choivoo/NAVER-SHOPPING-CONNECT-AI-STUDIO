@@ -1,0 +1,12 @@
+# Copy to local.properties (git-ignored). NO SECRETS here — they are compiled into BuildConfig.
+sdk.dir=/path/to/Android/sdk
+
+# NAVER Login (Naver Developers → 애플리케이션 → 네이버 로그인). Client ID is public.
+NAVER_CLIENT_ID=
+# Register this https URL as the Callback URL; it bounces to aistudio://oauth/naver (see backend/README.md)
+NAVER_REDIRECT_URI=https://your-worker.example.workers.dev/naver/callback
+# Token exchange endpoint holding the NAVER client secret
+NAVER_TOKEN_EXCHANGE_URL=https://your-worker.example.workers.dev/naver/token
+
+# Optional Claude backend proxy (production). Leave empty to use developer mode (key entered in the app).
+AI_PROXY_BASE_URL=

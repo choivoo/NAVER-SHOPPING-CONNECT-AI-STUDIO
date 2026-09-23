@@ -13,3 +13,4 @@
 .cxx/
 .env
 /release-artifacts/
+!.env.example
