@@ -28,7 +28,7 @@ class DemoAiEngine : AiEngine {
     override val isDemo = true
     override val modelLabel = "DEMO (템플릿)"
 
-    private fun Product.shortName() = title.split(" ").take(4).joinToString(" ")
+    private fun Product.shortName() = title.removePrefix("[데모]").trim().split(" ").take(4).joinToString(" ")
     private fun Product.specLines() = specifications.take(6).map { "${it.name}: ${it.value}" }
 
     override suspend fun analyzeProduct(product: Product): ProductIntelligence {

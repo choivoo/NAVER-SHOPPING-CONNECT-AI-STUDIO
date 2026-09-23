@@ -1,6 +1,5 @@
 package com.shoppingconnect.aistudio.ui.adaptive
 
-import android.app.Activity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -54,7 +52,7 @@ fun rememberWindowLayout(): WindowLayout {
         sc.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> LayoutClass.MEDIUM
         else -> LayoutClass.COMPACT
     }
-    val activity = LocalContext.current as? Activity
+    val activity = androidx.activity.compose.LocalActivity.current
     var fold by remember { mutableStateOf(FoldInfo()) }
     LaunchedEffect(activity) {
         activity ?: return@LaunchedEffect
@@ -90,12 +88,17 @@ fun WorkspacePanes(
 ) {
     val wl = LocalWindowLayout.current
     val density = LocalDensity.current
+    // Keep the center (main editor/preview) at least ~420dp wide: side panes shrink on
+    // ~840-1200dp screens such as a Galaxy Z Fold inner display, and grow on tablets.
+    val w = wl.widthDp
+    val leftW = if (w >= 1200) leftWidth else leftWidth.coerceAtMost((w * 0.2f).dp).coerceAtLeast(160.dp)
+    val rightW = if (w >= 1200) rightWidth else rightWidth.coerceAtMost((w * 0.32f).dp).coerceAtLeast(260.dp)
     Row(modifier.fillMaxSize()) {
         when (wl.layoutClass) {
             LayoutClass.COMPACT -> Box(Modifier.weight(1f).fillMaxHeight()) { center() }
             LayoutClass.MEDIUM -> {
                 Box(Modifier.weight(1f).fillMaxHeight()) { center() }
-                if (right != null) { VerticalDivider(); Box(Modifier.width(rightWidth.coerceAtMost(320.dp)).fillMaxHeight()) { right() } }
+                if (right != null) { VerticalDivider(); Box(Modifier.width(rightW.coerceAtMost(300.dp)).fillMaxHeight()) { right() } }
             }
             LayoutClass.EXPANDED -> {
                 val hinge = wl.fold.takeIf { it.hasHinge && it.separating && it.vertical }
@@ -104,15 +107,15 @@ fun WorkspacePanes(
                     val leftHalf = with(density) { hinge.hingeStartPx.toDp() }
                     val gap = with(density) { (hinge.hingeEndPx - hinge.hingeStartPx).toDp() }
                     Row(Modifier.width(leftHalf).fillMaxHeight()) {
-                        if (left != null) { Box(Modifier.width(leftWidth.coerceAtMost(leftHalf / 3)).fillMaxHeight()) { left() }; VerticalDivider() }
+                        if (left != null) { Box(Modifier.width(leftW.coerceAtMost(leftHalf / 3)).fillMaxHeight()) { left() }; VerticalDivider() }
                         Box(Modifier.weight(1f).fillMaxHeight()) { center() }
                     }
                     Spacer(Modifier.width(gap))
                     Box(Modifier.weight(1f).fillMaxHeight()) { right?.invoke() ?: Unit }
                 } else {
-                    if (left != null) { Box(Modifier.width(leftWidth).fillMaxHeight()) { left() }; VerticalDivider() }
+                    if (left != null) { Box(Modifier.width(leftW).fillMaxHeight()) { left() }; VerticalDivider() }
                     Box(Modifier.weight(1f).fillMaxHeight()) { center() }
-                    if (right != null) { VerticalDivider(); Box(Modifier.width(rightWidth).fillMaxHeight()) { right() } }
+                    if (right != null) { VerticalDivider(); Box(Modifier.width(rightW).fillMaxHeight()) { right() } }
                 }
             }
         }

@@ -108,6 +108,12 @@ class ShortsLogicTest {
         assertThat(cues.last().endMs).isAtMost(5000)
     }
 
+    @Test fun segmenterKeepsDecimalsAndThousands() {
+        val lines = KoreanSubtitleSegmenter.segment("연결: 블루투스 5.3, 가격은 1,200원입니다.")
+        assertThat(lines.joinToString("|")).contains("5.3")
+        assertThat(lines.joinToString("|")).contains("1,200원")
+    }
+
     @Test fun highlightsOnlyFacts() {
         val facts = KeywordHighlighter.factTokens(DemoData.product())
         assertThat(KeywordHighlighter.highlights("최대 8시간 재생", facts)).contains("8시간")

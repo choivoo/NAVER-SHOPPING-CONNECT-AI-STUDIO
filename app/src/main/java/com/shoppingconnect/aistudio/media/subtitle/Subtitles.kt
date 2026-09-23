@@ -14,7 +14,8 @@ object KoreanSubtitleSegmenter {
     fun segment(text: String, maxChars: Int = 14): List<String> {
         val clean = text.replace(Regex("\\s+"), " ").trim()
         if (clean.isEmpty()) return emptyList()
-        val phrases = clean.split(Regex("(?<=[.!?,。…~])\\s*")).map { it.trim() }.filter { it.isNotEmpty() }
+        // Break after sentence punctuation — but never inside numbers such as "5.3" or "1,200".
+        val phrases = clean.split(Regex("(?<=[!?。…~])\\s*|(?<=[.,])(?!\\d)\\s*")).map { it.trim() }.filter { it.isNotEmpty() }
         return phrases.flatMap { splitPhrase(it, maxChars) }.map { it.trimEnd(',', ' ') }.filter { it.isNotBlank() }
     }
 

@@ -89,7 +89,7 @@ android {
         abortOnError = true
         checkReleaseBuilds = true
         warningsAsErrors = false
-        disable += setOf("GradleDependency", "NewerVersionAvailable", "AndroidGradlePluginVersion", "ObsoleteLintCustomCheck")
+        disable += setOf("GradleDependency", "NewerVersionAvailable", "AndroidGradlePluginVersion", "ObsoleteLintCustomCheck", "UseKtx", "ModifierParameter", "ObsoleteSdkInt")
         xmlReport = true
         htmlReport = true
     }

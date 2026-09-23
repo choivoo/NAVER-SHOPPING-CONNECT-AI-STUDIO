@@ -2,7 +2,7 @@ package com.shoppingconnect.aistudio.content
 
 object KoreanText {
     fun sentences(text: String): List<String> =
-        text.replace("\n", " ").split(Regex("(?<=[.!?。…])\\s+")).map { it.trim() }.filter { it.isNotEmpty() }
+        text.replace("\n", " ").split(Regex("(?<=[.!?。…])(?!\\d)\\s+")).map { it.trim() }.filter { it.isNotEmpty() }
 
     /** Splits a paragraph that is too long for mobile reading at sentence boundaries. */
     fun splitParagraph(text: String, maxChars: Int = 220): List<String> {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AI Studio</string>
-    <string name="app_full_name">NAVER Shopping Connect AI Studio</string>
     <string name="notif_channel_render">숏폼 렌더링</string>
     <string name="notif_channel_ai">AI 콘텐츠 생성</string>
     <string name="notif_channel_done">작업 완료</string>

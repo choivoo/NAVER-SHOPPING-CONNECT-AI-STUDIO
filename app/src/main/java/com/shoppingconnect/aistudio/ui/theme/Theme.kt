@@ -51,9 +51,9 @@ private val Dark = darkColorScheme(
     tertiary = Color(0xFFFFB690), tertiaryContainer = Color(0xFF8C3F14),
     background = Color(0xFF111018), onBackground = Color(0xFFE7E4F0), surface = Color(0xFF111018), onSurface = Color(0xFFE7E4F0),
     surfaceVariant = Color(0xFF46445A), onSurfaceVariant = Color(0xFFC9C6DA), surfaceContainerLowest = Color(0xFF0C0B12),
-    surfaceContainerLow = Color(0xFF19182200), surfaceContainer = Color(0xFF1E1D28), surfaceContainerHigh = Color(0xFF282733), surfaceContainerHighest = Color(0xFF33323E),
+    surfaceContainerLow = Color(0xFF191822), surfaceContainer = Color(0xFF1E1D28), surfaceContainerHigh = Color(0xFF282733), surfaceContainerHighest = Color(0xFF33323E),
     outline = Color(0xFF938FA6), outlineVariant = Color(0xFF46445A), error = Color(0xFFFF8A80),
-).let { it.copy(surfaceContainerLow = Color(0xFF191822)) }
+)
 
 val AppShapes = Shapes(
     extraSmall = RoundedCornerShape(8.dp), small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(16.dp),

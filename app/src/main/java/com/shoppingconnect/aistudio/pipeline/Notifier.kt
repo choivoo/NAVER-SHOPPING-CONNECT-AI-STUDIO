@@ -18,8 +18,11 @@ import javax.inject.Singleton
 /** Notifications are only posted when the user granted permission (Android 13+). */
 @Singleton
 class Notifier @Inject constructor(@ApplicationContext private val context: Context) {
-    fun allowed(): Boolean = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED &&
-        NotificationManagerCompat.from(context).areNotificationsEnabled()
+    fun allowed(): Boolean {
+        val runtimeGranted = android.os.Build.VERSION.SDK_INT < 33 ||
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        return runtimeGranted && NotificationManagerCompat.from(context).areNotificationsEnabled()
+    }
 
     private fun openIntent(projectId: String?): PendingIntent {
         val i = Intent(context, MainActivity::class.java).apply {
