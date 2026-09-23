@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -39,7 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -177,7 +177,7 @@ fun PublishScreen(onBack: () -> Unit, onEdit: () -> Unit, vm: BlogViewModel = hi
                                     if (r is PublishResult.HandedOff) vm.markReady()
                                 }
                             }
-                            if (p is NaverBlogHandoffPublisher) Button(onClick = { action() }, enabled = enabled, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.OpenInNew, null); Spacer(Modifier.width(6.dp)); Text("네이버 블로그에서 계속") }
+                            if (p is NaverBlogHandoffPublisher) Button(onClick = { action() }, enabled = enabled, modifier = Modifier.fillMaxWidth()) { Icon(Icons.AutoMirrored.Filled.OpenInNew, null); Spacer(Modifier.width(6.dp)); Text("네이버 블로그에서 계속") }
                             else OutlinedButton(onClick = { action() }, enabled = enabled) { Icon(Icons.Default.Share, null); Spacer(Modifier.width(6.dp)); Text(p.label) }
                         }
                     }

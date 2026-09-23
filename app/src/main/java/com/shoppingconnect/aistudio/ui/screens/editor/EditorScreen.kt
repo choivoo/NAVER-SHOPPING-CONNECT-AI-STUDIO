@@ -42,7 +42,7 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.FactCheck
+import androidx.compose.material.icons.automirrored.filled.FactCheck
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatQuote
 import androidx.compose.material.icons.filled.HorizontalRule
@@ -99,7 +99,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shoppingconnect.aistudio.ai.RewriteAction
 import com.shoppingconnect.aistudio.core.common.formatDateTime
@@ -333,7 +333,7 @@ private fun Toolbar(vm: EditorViewModel, onImage: () -> Unit, onAi: () -> Unit, 
             TextButton(onClick = onAi) { Icon(Icons.Default.AutoAwesome, null); Text("AI") }
             if (compact) {
                 IconButton(onClick = { onPanel(Panel.SEO) }) { Icon(Icons.Default.Insights, "SEO Inspector") }
-                IconButton(onClick = { onPanel(Panel.CHECK) }) { Icon(Icons.Default.FactCheck, "검사") }
+                IconButton(onClick = { onPanel(Panel.CHECK) }) { Icon(Icons.AutoMirrored.Filled.FactCheck, "검사") }
                 IconButton(onClick = { onPanel(Panel.FACTS) }) { Icon(Icons.Default.Verified, "상품 사실") }
             }
         }

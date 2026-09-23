@@ -61,6 +61,8 @@ data class ModelInfo(val id: String, val displayName: String, val maxInputTokens
 class ClaudeClient(
     private val http: OkHttpClient,
     private val secrets: SecretStore,
+    private val directBaseUrl: String = DIRECT_BASE,
+    private val backoffBaseMs: Long = 1500,
 ) {
     val totalInputTokens = AtomicLong(0)
     val totalOutputTokens = AtomicLong(0)
@@ -73,7 +75,7 @@ class ClaudeClient(
         AiConnection.DIRECT -> {
             val key = secrets.get(SecretKeyName.CLAUDE_API_KEY)
                 ?: throw AppException(ErrorKind.AiNotConfigured)
-            Endpoint(DIRECT_BASE, mapOf("x-api-key" to key), isDirect = true)
+            Endpoint(directBaseUrl, mapOf("x-api-key" to key), isDirect = true)
         }
         AiConnection.PROXY -> {
             val base = settings.proxyBaseUrl.ifBlank { BuildConfig.AI_PROXY_BASE_URL }.trimEnd('/')
@@ -159,7 +161,7 @@ class ClaudeClient(
         }
     }
 
-    private fun backoff(attempt: Int): Long = (1500L shl (attempt - 1)).coerceAtMost(12_000)
+    private fun backoff(attempt: Int): Long = (backoffBaseMs shl (attempt - 1)).coerceAtMost(12_000)
 
     private fun buildBody(r: ClaudeRequest, useSchema: Boolean, useFallback: Boolean): JsonObject = buildJsonObject {
         put("model", r.model)

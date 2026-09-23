@@ -32,7 +32,7 @@ import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.AlertDialog
@@ -72,7 +72,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shoppingconnect.aistudio.auth.NaverAuthState
 import com.shoppingconnect.aistudio.domain.model.ArticleLength
@@ -134,7 +134,6 @@ fun HomeScreen(
     val hero: @Composable () -> Unit = {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (!online) OfflineBanner()
-            if (!aiReady) AiSetupBanner(onSettings = { onOpenSettings("ai") }, onDemo = { askNotificationsOnce(); vm.startDemo() })
             LinkHeroCard(
                 ui = ui,
                 onUrl = vm::onUrlChange,
@@ -150,6 +149,7 @@ fun HomeScreen(
                 onManual = vm::manualInput,
                 onBatch = onBatch,
             )
+            if (!aiReady) AiSetupBanner(onSettings = { onOpenSettings("ai") }, onDemo = { askNotificationsOnce(); vm.startDemo() })
             ui.error?.let { err ->
                 Surface(color = MaterialTheme.colorScheme.errorContainer, shape = MaterialTheme.shapes.medium) {
                     Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -266,7 +266,7 @@ private fun LinkHeroCard(
             }
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 TextButton(onClick = onManual) { Icon(Icons.Default.EditNote, null); Spacer(Modifier.width(4.dp)); Text("상품 정보 직접 입력") }
-                TextButton(onClick = onBatch) { Icon(Icons.Default.PlaylistAdd, null); Spacer(Modifier.width(4.dp)); Text("여러 링크 (Batch)") }
+                TextButton(onClick = onBatch) { Icon(Icons.AutoMirrored.Filled.PlaylistAdd, null); Spacer(Modifier.width(4.dp)); Text("여러 링크 (Batch)") }
             }
             Text("게시는 항상 최종 검수 후 직접 진행합니다.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
         }

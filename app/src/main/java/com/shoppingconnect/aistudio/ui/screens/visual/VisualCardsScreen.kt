@@ -14,8 +14,8 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -35,7 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shoppingconnect.aistudio.domain.model.CardType
 import com.shoppingconnect.aistudio.ui.components.AppTopBar
@@ -67,8 +67,8 @@ fun VisualCardsScreen(onBack: () -> Unit, onEdit: (String) -> Unit, vm: VisualCa
                             Row {
                                 IconButton(onClick = { onEdit(c.id) }) { Icon(Icons.Default.Edit, "편집") }
                                 IconButton(onClick = { vm.regenerate(c.id) }, enabled = !busy) { Icon(Icons.Default.Refresh, "다시 생성") }
-                                IconButton(onClick = { vm.move(c.id, -1) }, enabled = !busy) { Icon(Icons.Default.ArrowBack, "앞으로 이동") }
-                                IconButton(onClick = { vm.move(c.id, 1) }, enabled = !busy) { Icon(Icons.Default.ArrowForward, "뒤로 이동") }
+                                IconButton(onClick = { vm.move(c.id, -1) }, enabled = !busy) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "앞으로 이동") }
+                                IconButton(onClick = { vm.move(c.id, 1) }, enabled = !busy) { Icon(Icons.AutoMirrored.Filled.ArrowForward, "뒤로 이동") }
                                 IconButton(onClick = { vm.delete(c.id) }, enabled = !busy) { Icon(Icons.Default.Delete, "삭제") }
                             }
                         }

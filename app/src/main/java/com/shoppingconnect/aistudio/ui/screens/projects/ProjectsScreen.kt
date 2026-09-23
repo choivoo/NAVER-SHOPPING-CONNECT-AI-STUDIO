@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -27,7 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -61,7 +61,7 @@ fun ProjectsScreen(onOpen: (String) -> Unit, onBatch: () -> Unit, vm: ProjectsVi
     val st by vm.status.collectAsStateWithLifecycle()
     val wl = LocalWindowLayout.current
     var selected by rememberSaveable { mutableStateOf<String?>(null) }
-    Scaffold(topBar = { CenterTopBar("프로젝트") { IconButton(onClick = onBatch) { Icon(Icons.Default.PlaylistAdd, "Batch Workspace") } } }) { pad ->
+    Scaffold(topBar = { CenterTopBar("프로젝트") { IconButton(onClick = onBatch) { Icon(Icons.AutoMirrored.Filled.PlaylistAdd, "Batch Workspace") } } }) { pad ->
         Column(Modifier.padding(pad).fillMaxSize()) {
             OutlinedTextField(q, { vm.query.value = it }, Modifier.fillMaxWidth().padding(horizontal = 16.dp), singleLine = true,
                 leadingIcon = { Icon(Icons.Default.Search, null) }, placeholder = { Text("상품명·브랜드·태그·상태 검색") })
