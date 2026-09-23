@@ -69,6 +69,7 @@ data class Scene(
     val isVideo: Boolean = false,
     val durationMs: Long = 3000,
     val narration: String = "",
+    val caption: String = "",
     val transitionIn: Transition = Transition(),
     val motion: MotionEffect = MotionEffect.KEN_BURNS_IN,
     val fit: FitMode = FitMode.FILL,
@@ -94,6 +95,7 @@ data class TextClip(
     val yFraction: Float = 0.22f,
     val sizeSp: Float = 64f,
     val highlight: String? = null,
+    val sceneId: String? = null,
 )
 
 @Serializable
