@@ -72,3 +72,61 @@ jobs:
           path: |
             app/build/reports/
             docs/screenshots/
+
+  # Real Android runtime QA on a foldable emulator (Pixel Fold profile, KVM). This is an emulator,
+  # not a Galaxy device: results are reported as "Emulator", never as real-device results.
+  device-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: "platforms;android-36 build-tools;36.0.0 platform-tools"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug, androidTest and release APKs
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:assembleRelease --stacktrace
+
+      - name: Dev-sign the release APK (debug key — for QA install only, not for distribution)
+        run: |
+          REL=$(ls app/build/outputs/apk/release/*.apk | head -1)
+          $ANDROID_HOME/build-tools/36.0.0/zipalign -f -p 4 "$REL" app-release-aligned.apk
+          $ANDROID_HOME/build-tools/36.0.0/apksigner sign --ks ~/.android/debug.keystore --ks-pass pass:android \
+            --ks-key-alias androiddebugkey --key-pass pass:android --out app-release-devsigned.apk app-release-aligned.apk
+          $ANDROID_HOME/build-tools/36.0.0/apksigner verify app-release-devsigned.apk
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Device QA on a foldable emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_fold
+          ram-size: 4096M
+          disk-size: 6000M
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          script: scripts/device-qa.sh app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk app-release-devsigned.apk device-qa-out
+
+      - name: Upload device QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: device-qa-emulator
+          path: device-qa-out/

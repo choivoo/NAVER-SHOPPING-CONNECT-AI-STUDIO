@@ -169,4 +169,23 @@ dependencies {
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)
+
+    // Instrumented QA suite (emulator / real device): real TTS, MediaCodec render, MediaStore, UI flow.
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.uiautomator)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.ui.test.junit4)
+}
+
+// Host (Robolectric) tests run on the debug variant only: the Compose UI tests need the debug-only
+// ui-test-manifest host activity, and shipping it in release just for tests is not acceptable. The
+// release build itself is exercised on a device/emulator by scripts/device-qa.sh (R8 smoke test).
+androidComponents {
+    beforeVariants(selector().withBuildType("release")) { variant ->
+        variant.hostTests.values.forEach { it.enable = false }
+    }
 }

@@ -20,7 +20,7 @@ import com.shoppingconnect.aistudio.media.audio.SfxSynth
 import java.io.File
 import java.nio.ByteBuffer
 
-data class RenderStats(val frames: Int, val renderMs: Long, val width: Int, val height: Int, val codec: String, val hardware: Boolean, val bytes: Long)
+data class RenderStats(val frames: Int, val renderMs: Long, val width: Int, val height: Int, val codec: String, val hardware: Boolean, val bytes: Long, val codecName: String = "")
 
 /**
  * Timeline → MP4 (H.264/HEVC + AAC). Audio is mixed and encoded first, then video frames are
@@ -35,11 +35,9 @@ class ShortsRenderer(
         if (timeline.scenes.isEmpty()) throw AppException(ErrorKind.RenderFailure, "장면이 없습니다.")
         val started = System.currentTimeMillis()
         val rs = timeline.render
-        val choice = CodecSupport.choose(rs.hevc, rs.resolution.width, rs.resolution.height, rs.fps)
         val fps = rs.fps.coerceIn(24, 60)
-        val bitrate = (choice.width * choice.height * fps * rs.quality.bitsPerPixel).toInt().coerceIn(2_000_000, 40_000_000)
+        val candidates = CodecSupport.candidates(rs.hevc, rs.resolution.width, rs.resolution.height, fps)
         val durationMs = timeline.durationMs
-        AppLog.i("Render", "start ${choice.width}x${choice.height}@$fps ${choice.mime} hw=${choice.hardware} ${durationMs}ms")
 
         onProgress(1)
         val audio = buildAudio(durationMs, isCancelled)
@@ -48,9 +46,17 @@ class ShortsRenderer(
         output.parentFile?.mkdirs()
         val tmp = File(output.parentFile, output.name + ".part")
         tmp.delete()
-        val muxer = MediaMuxer(tmp.absolutePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
+        val (choice, encoder) = CodecSupport.openFirst(
+            candidates,
+            onFallback = { c, e -> AppLog.w("Render", "encoder ${c.codecName} failed to start, trying next", e) },
+        ) { c -> SurfaceVideoEncoder(c, fps, bitrate(c, fps, rs.quality.bitsPerPixel)) }
+        AppLog.i("Render", "start ${choice.width}x${choice.height}@$fps ${choice.mime} ${choice.codecName} hw=${choice.hardware} ${durationMs}ms")
+        val muxer = try {
+            MediaMuxer(tmp.absolutePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
+        } catch (e: Exception) {
+            encoder.release(); throw e
+        }
         val media = SceneMediaSource(resolvePath, maxDim = (maxOf(choice.width, choice.height) * 1.2f).toInt())
-        val encoder = SurfaceVideoEncoder(choice, fps, bitrate)
         val frame = Bitmap.createBitmap(choice.width, choice.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(frame)
         val renderer = FrameRenderer(timeline.copy(render = rs), choice.width, choice.height, media)
@@ -129,8 +135,11 @@ class ShortsRenderer(
             if (success) { output.delete(); tmp.renameTo(output) } else tmp.delete()
         }
         onProgress(100)
-        return RenderStats(totalFrames, System.currentTimeMillis() - started, choice.width, choice.height, choice.mime, choice.hardware, output.length())
+        return RenderStats(totalFrames, System.currentTimeMillis() - started, choice.width, choice.height, choice.mime, choice.hardware, output.length(), choice.codecName)
     }
+
+    private fun bitrate(c: EncoderChoice, fps: Int, bitsPerPixel: Float): Int =
+        (c.width * c.height * fps * bitsPerPixel).toInt().coerceIn(2_000_000, 40_000_000)
 
     private fun buildAudio(durationMs: Long, isCancelled: () -> Boolean): EncodedAudio {
         val voice = timeline.voiceClips.filter { it.path != null && File(it.path).exists() }.mapNotNull { c ->
