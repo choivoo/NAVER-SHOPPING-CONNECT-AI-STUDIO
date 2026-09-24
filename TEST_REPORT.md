@@ -1,11 +1,11 @@
 # TEST REPORT — v1.0.0 (2026-09-23)
 
-`./gradlew :app:testDebugUnitTest` → **90 tests, 90 passed, 0 failed** (JVM + Robolectric 4.16, SDK 35, native graphics).
+`./gradlew :app:testDebugUnitTest` → **91 tests, 91 passed, 0 failed** (JVM + Robolectric 4.16, SDK 35, native graphics).
 
 | Suite | Tests | Covers |
 |---|---|---|
 | UrlSecurityTest | 5 | http/https only, file/javascript/intent schemes, localhost/private/link-local/CGNAT/IPv6, user-info, ports |
-| UrlProcessorTest | 4 | URL extraction from shared text, source classification, tracking removal, compatible/unsupported |
+| UrlProcessorTest (+ BlogHandoffUrlTest) | 5 | URL extraction from shared text, source classification, tracking removal, compatible/unsupported |
 | HtmlProductExtractorTest | 7 | JSON-LD, OpenGraph, SmartStore embedded state, login wall, CAPTCHA, prices, manual specs, prompt-injection text excluded from facts |
 | JsonRepairAndRedactionTest | 5 | fenced/prose JSON, trailing commas, truncated JSON, braces in strings, secret redaction in logs |
 | ClaudeClientTest | 18 | headers/body, 429+529 retry, rate-limit exhausted, 401, 404 model, refusal, empty response, 400 feature degradation, 413, timeout, not configured, Auto Best discovery (Opus 5.5 first), discovery fallback, JSON repair, validation-feedback retry, parse failure, next-model fallback |
@@ -21,3 +21,7 @@
 ## Not covered by automated tests (environment limits)
 - MediaCodec/EGL MP4 encoding, Android TTS synthesis, Custom Tab OAuth, MediaStore export: require a device/emulator. No KVM → no emulator in this build environment.
 - Live Claude API and live NAVER pages: no credentials in the build environment; client behaviour is verified against API-shaped mock responses.
+
+## On-device instrumented tests (added 2026-09-24) — compiled, NOT RUN
+`app/src/androidTest/java/com/shoppingconnect/aistudio/device/` — `DeviceMediaTest` (7), `DeviceAppFlowTest` (3), `DeviceNetworkTest` (2).
+`./gradlew :app:assembleDebugAndroidTest` → BUILD SUCCESSFUL. They require a connected device (`./scripts/device_qa.sh`); no device was available, so **0 of 12 have been executed**.

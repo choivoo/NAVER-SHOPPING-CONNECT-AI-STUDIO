@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Unreleased (toward 1.0.1-rc1)
+### Added
+- On-device QA: instrumented tests for real MediaCodec render (1080p H.264 / 720p HEVC), Android TTS, card rendering 1080/2160px, MediaStore export, share URI, app demo flow, editor input, live Claude / product URL (opt-in)
+- `scripts/device_qa.sh`: install, cold start, fold/unfold states, dark mode/large font, process death, R8 release smoke, logcat crash & secret scan
+### Verified
+- NAVER blog hand-off default URL (`blog.naver.com/GoBlogWrite.naver`) checked live; regression test added
+### Not yet done
+- Real-device execution (no device connected in the build environment)
+
 ## 1.0.0 — 2026-09-23 (Official Release · Ultra Content Automation Edition)
 ### Added
 - Link → Product pipeline (Naver Shopping, SmartStore/BrandStore, Shopping Connect short links, generic pages, manual input, optional Naver Shopping Search API)

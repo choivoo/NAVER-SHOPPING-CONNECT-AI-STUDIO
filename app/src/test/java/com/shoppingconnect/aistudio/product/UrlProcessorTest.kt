@@ -34,3 +34,15 @@ class UrlProcessorTest {
         assertThat(UrlProcessor.check("그냥 글자")).isInstanceOf(LinkCheck.Unsupported::class.java)
     }
 }
+
+class BlogHandoffUrlTest {
+    /**
+     * Regression (checked live 2026-09-24): https://blog.naver.com/GoBlogWrite.naver → NAVER login with return URL
+     * (valid entry point), whereas m.blog.naver.com/GoBlogWrite.naver and PostWriteForm.naver return "not found".
+     */
+    @org.junit.Test fun defaultBlogWriteUrlIsDesktopGoBlogWrite() {
+        val url = com.shoppingconnect.aistudio.data.settings.AppSettings.DEFAULT_BLOG_WRITE_URL
+        com.google.common.truth.Truth.assertThat(url).isEqualTo("https://blog.naver.com/GoBlogWrite.naver")
+        com.google.common.truth.Truth.assertThat(url).doesNotContain("m.blog.naver.com")
+    }
+}

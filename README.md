@@ -59,6 +59,18 @@ GitHub Actions(`.github/workflows/android.yml`)가 lint → test → debug/relea
 * **NAVER 로그인** — Naver Developers에 앱 등록 → `NAVER_CLIENT_ID`, Callback URL(https, 예: `backend/`의 `/naver/callback`), 토큰 교환 URL 설정. 자세한 절차: [SETUP_GUIDE.md](SETUP_GUIDE.md)
 * **키 없이 체험** — 홈의 [데모로 체험]: 명확히 DEMO로 표시된 샘플 상품으로 전체 흐름(카드·숏폼·렌더 포함)을 확인합니다.
 
+## 실기기 QA (Galaxy Z Fold)
+
+USB 디버깅을 켠 기기를 연결한 뒤:
+
+```bash
+./scripts/device_qa.sh --release                                   # 기본
+CLAUDE_API_KEY=... PRODUCT_URL=https://naver.me/... ./scripts/device_qa.sh   # 실제 API·링크까지
+```
+
+설치 → 콜드 스타트 → 접기/펼치기(`cmd device_state`) → 다크모드·큰 글꼴 → 온디바이스 테스트(실제 MP4 렌더·TTS·갤러리·데모 파이프라인·편집기) → 프로세스 종료 복구 → R8 릴리스 실행 → logcat 크래시/비밀값 검사 순서로 진행하고 `docs/device-qa/<시간>/SUMMARY.md`에 결과를 남깁니다.
+서명이 다른 기존 앱이 있으면 데이터를 지우지 않도록 중단하며, `--allow-reinstall`을 줄 때만 재설치합니다.
+
 ## 문서
 
 [SETUP_GUIDE](SETUP_GUIDE.md) · [ARCHITECTURE](ARCHITECTURE.md) · [SECURITY](SECURITY.md) · [CHANGELOG](CHANGELOG.md) · [TEST_REPORT](TEST_REPORT.md) · [QA_REPORT](QA_REPORT.md) · [RELEASE_REPORT](RELEASE_REPORT.md) · [backend/](backend/README.md)
